@@ -31,9 +31,9 @@ export default class Scatterplot {
             extract: {
               field: 'qDimensionInfo/0',
               props: {
-                movie: { value: v => v.qText },
-                cost: { field: 'qMeasureInfo/0' },
-                rating: { field: 'qMeasureInfo/1' },
+                airport: { value: v => v.qText },
+                latitude: { field: 'qMeasureInfo/0' },
+                longitude: { field: 'qMeasureInfo/1' },
               },
             },
           },
@@ -84,13 +84,13 @@ export default class Scatterplot {
             trigger: [{
               on: 'tap',
               action: 'set',
-              data: ['movie'],
+              data: ['airport'],
               propagation: 'stop',
               contexts: ['highlight'],
             }, {
               on: 'over',
               action: 'set',
-              data: ['movie'],
+              data: ['airport'],
               propagation: 'stop',
               contexts: ['tooltip'],
             }],
@@ -106,9 +106,9 @@ export default class Scatterplot {
             }],
           },
           settings: {
-            x: { scale: 'x', ref: 'rating' },
-            y: { scale: 'y', ref: 'cost' },
-            size: 0.4,
+            x: { scale: 'x', ref: 'longitude' },
+            y: { scale: 'y', ref: 'latitude' },
+            size: 0.2,
             opacity: 0.8,
             fill: 'rgba(109, 232, 193, 1.0)',
           },
@@ -143,7 +143,7 @@ export default class Scatterplot {
             x: s.bounds.x + s.bounds.width + rect.x + 5,
             y: s.bounds.y + (s.bounds.height / 2) + (rect.y - 28),
           };
-          Scatterplot.showTooltip(s.data.movie.value, p);
+          Scatterplot.showTooltip(s.data.airport.value, p);
         } else {
           Scatterplot.hideTooltip();
         }
@@ -169,28 +169,30 @@ export default class Scatterplot {
       return;
     }
 
+    console.log(layout.qHyperCube.qDataPages[0]);
+
     const data = layout.qHyperCube.qDataPages[0].qMatrix.map(item => ({
-      movie: item[0].qText,
-      image: item[1].qText,
-      year: item[2].qText,
-      genre: item[3].qText,
-      description: item[4].qText,
+      airport: item[0].qText,
+      longitude: item[1].qText,
+      latitude: item[2].qText,
+      city: item[3].qText,
+      altitude: item[4].qText,
+      country: item[5].qText,
+      code: item[6].qText,
     }));
 
-    const image = document.getElementsByClassName('movie-image')[0];
-    image.src = data[0].image;
+    const airport = document.getElementsByClassName('airport-name')[0];
+    airport.innerHTML = data[0].airport;
 
-    const title = document.getElementsByClassName('movie-title')[0];
-    title.innerHTML = data[0].movie;
+    const height = document.getElementsByClassName('airport-height')[0];
+    height.innerHTML = data[0].altitude + ' (ft); ' + Math.round(data[0].altitude * 30.48)/100 + ' (m).';
 
-    const year = document.getElementsByClassName('movie-year')[0];
-    year.innerHTML = data[0].year;
+    const coordinates = document.getElementsByClassName('airport-coordinates')[0];
+    coordinates.innerHTML = `Longitude: ${data[0].longitude}  Latitude: ${data[0].latitude}`;
 
-    const genre = document.getElementsByClassName('movie-genre')[0];
-    genre.innerHTML = data[0].genre;
+    const description = document.getElementsByClassName('airport-description')[0];
+    description.innerHTML = `${data[0].airport} (${data[0].code}) is located in ${data[0].city}, ${data[0].country}.`;
 
-    const description = document.getElementsByClassName('movie-description')[0];
-    description.innerHTML = data[0].description;
   }
 
   static hideTooltip() {

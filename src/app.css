@@ -219,12 +219,7 @@ app {
   display: flex;
 }
 
-.movie-image {
-  height: 219px;
-  border-radius: 3px;
-}
-
-.movie-info {
+.airport-info {
   margin-left: 20px;
   display: flex;
   flex-direction: column;
@@ -244,13 +239,13 @@ app {
   padding-top: 7px;
 }
 
-.movie-description {
+.airport-description {
   max-height: 85px;
   overflow-x: hidden;
   overflow-y: auto;
 }
 
-.no-movie-selected {
+.no-airport-selected {
   text-align: center;
   line-height: 240px;
   font-size: 18px;

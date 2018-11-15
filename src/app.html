@@ -6,17 +6,12 @@
   <div class="right-content">
     <div class="clear-selections" ng-click="$ctrl.clearAllSelections()" ng-class="{'disabled': !dataSelected}">Clear
       selections</div>
-    <img class="git-hub-icon" src="src/resources/github-social-logo.svg" ng-click="openGithub()"
-      title="Open GitHub project">
   </div>
 </div>
 <div class="content" ng-click="$ctrl.clearAllSelections()">
   <div class="container" ng-if="$ctrl.connected">
     <div class="title">Overview of Airports height</div>
-
-        <!-- <img src="http://pngimg.com/uploads/world_map/world_map_PNG28.png"/> -->
-        <div id="chart-container-scatterplot" class="picasso-scatterplot"></div>
-  
+        <div id="chart-container-scatterplot" class="picasso-scatterplot"></div> 
   </div>
 </div>
 <div class="footer" ng-class="{'expanded': showFooter}">
@@ -28,15 +23,15 @@
     <div class="airport-info">
       <span class="info-title">Name</span>
       <span class="airport-name"></span>
-      <span class="info-title">Year</span>
-      <span class="movie-year"></span>
-      <span class="info-title">Genre</span>
-      <span class="movie-genre"></span>
+      <span class="info-title">Height</span>
+      <span class="airport-height"></span>
+      <span class="info-title">Coordinates</span>
+      <span class="airport-coordinates"></span>
       <span class="info-title">Description</span>
-      <span class="movie-description"></span>
+      <span class="airport-description"></span>
     </div>
   </div>
-  <div class="no-movie-selected" ng-show="!dataSelected">No movie is selected</div>
+  <div class="no-airport-selected" ng-show="!dataSelected">No airport is selected</div>
 </div>
 
 <div class="error" ng-if="!$ctrl.connected && !$ctrl.connecting">

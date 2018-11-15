@@ -6,7 +6,6 @@ import enigma from 'enigma.js';
 import enigmaMixin from 'halyard.js/dist/halyard-enigma-mixin';
 import qixSchema from 'enigma.js/schemas/3.2.json';
 import template from './app.html';
-import Scatterplot from './scatterplot';
 import ScatterplotAirport from './scatterplot-airport';
 
 const halyard = new Halyard();
@@ -34,67 +33,16 @@ angular.module('app', []).component('app', {
 
     let app = null;
     let scatterplotObject = null;
-    let scatterplotObjectAirport = null;
 
     const select = (value) => {
-      // app.getField('Movie').then((field) => {
-      //   field.select(value).then(() => {
-      //     $scope.dataSelected = true;
-      //     this.getMovieInfo().then(() => {
-      //       $scope.showFooter = true;
-      //     });
-      //   });
-      // });
-    };
-
-    const scatterplotProperties = {
-      qInfo: {
-        qType: 'visualization',
-        qId: '',
-      },
-      type: 'my-picasso-scatterplot',
-      labels: true,
-      qHyperCubeDef: {
-        qDimensions: [{
-          qDef: {
-            qFieldDefs: ['Movie'],
-            qSortCriterias: [{
-              qSortByAscii: 1,
-            }],
-          },
-        }],
-        qMeasures: [{
-          qDef: {
-            qDef: '[Adjusted Costs]',
-            qLabel: 'Adjusted cost ($)',
-          },
-          qSortBy: {
-            qSortByNumeric: -1,
-          },
-        },
-        {
-          qDef: {
-            qDef: '[imdbRating]',
-            qLabel: 'imdb rating',
-          },
-        }],
-        qInitialDataFetch: [{
-          qTop: 0, qHeight: 50, qLeft: 0, qWidth: 3,
-        }],
-        qSuppressZero: false,
-        qSuppressMissing: true,
-      },
-    };
-
-    const scatterplot = new Scatterplot();
-
-    const paintScatterPlot = (layout) => {
-      scatterplot.paintScatterplot(document.getElementById('chart-container-scatterplot'), layout, {
-        select,
-        clear: () => this.clearAllSelections(),
-        hasSelected: $scope.dataSelected,
+      app.getField('Airport').then((field) => {
+        field.select(value).then(() => {
+          $scope.dataSelected = true;
+          this.getAirportInfo().then(() => {
+            $scope.showFooter = true;
+          });
+        });
       });
-      this.painted = true;
     };
 
     const scatterplotPropertiesAirport = {
@@ -126,6 +74,15 @@ angular.module('app', []).component('app', {
           qDef: {
             qDef: '[Longitude]',
             qLabel: 'Longitude',
+          },
+        },
+        {
+          qDef: {
+            qDef: '[Altitude (ft)]',
+            qLabel: 'Altitude (ft)',
+          },
+          qSortBy: {
+            qSortByNumeric: -1,
           },
         }],
         qInitialDataFetch: [{
@@ -164,20 +121,6 @@ angular.module('app', []).component('app', {
       };
 
       // Add local data
-      const filePathMovie = '/data/movies.csv';
-      const tableMovie = new Halyard.Table(filePathMovie, {
-        name: 'Movies',
-        fields: [
-          { src: 'Movie', name: 'Movie' },
-          { src: 'Year', name: 'Year' },
-          { src: 'Adjusted Costs', name: 'Adjusted Costs' },
-          { src: 'Description', name: 'Description' },
-          { src: 'Image', name: 'Image' },
-        ],
-        delimiter: ',',
-      });
-      halyard.addTable(tableMovie);
-
       const filePathAirport = '/data/airports.csv';
       const tableAirport = new Halyard.Table(filePathAirport, {
         name: 'Airports',
@@ -187,6 +130,8 @@ angular.module('app', []).component('app', {
           { src: 'Latitude', name: 'Latitude' },
           { src: 'Longitude', name: 'Longitude' },
           { src: 'Altitude (ft)', name: 'Altitude (ft)' },
+          { src: 'Country', name: 'Country' },
+          { src: 'IATA Code', name: 'IATA Code' },
         ],
         delimiter: ','
       });
@@ -203,8 +148,6 @@ angular.module('app', []).component('app', {
                 scatterplotObject = model;
 
                 const update = () => scatterplotObject.getLayout().then((layout) => {
-                  // console.log(layout);
-                  // paintScatterPlot(layout);
                   paintScatterPlotAirport(layout);
                 });
 
@@ -222,42 +165,6 @@ angular.module('app', []).component('app', {
         this.connecting = false;
       });
 
-      // Add web data
-      $http.get('https://gist.githubusercontent.com/carlioth/b86ede12e75b5756c9f34c0d65a22bb3/raw/e733b74c7c1c5494669b36893a31de5427b7b4fc/MovieInfo.csv')
-        .then((data) => {
-          const table = new Halyard.Table(data.data, { name: 'MoviesInfo', delimiter: ';', characterSet: 'utf8' });
-          halyard.addTable(table);
-        })
-        .then(() => {
-          // enigma.create(config).open().then((qix) => {
-          //   this.connected = true;
-          //   this.connecting = false;
-          //   qix.createSessionAppUsingHalyard(halyard).then((result) => {
-          //     app = result;
-          //     result.getAppLayout()
-          //       .then(() => {
-          //         result.createSessionObject(scatterplotPropertiesAirport).then((model) => {
-          //           scatterplotObject = model;
-
-          //           const update = () => scatterplotObject.getLayout().then((layout) => {
-          //             // console.log(layout);
-          //             paintScatterPlotAirport(layout);
-          //           });
-
-          //           scatterplotObject.on('changed', update);
-          //           update();
-          //         });
-          //       });
-          //   }, () => {
-          //     this.error = 'Could not create session app';
-          //     this.connected = false;
-          //     this.connecting = false;
-          //   });
-          // }, () => {
-          //   this.error = 'Could not connect to QIX Engine';
-          //   this.connecting = false;
-          // });
-        });
     };
 
     this.clearAllSelections = () => {
@@ -268,7 +175,7 @@ angular.module('app', []).component('app', {
       $scope.showFooter = false;
     };
 
-    this.getMovieInfo = () => {
+    this.getAirportInfo = () => {
       const tableProperties = {
         qInfo: {
           qType: 'visualization',
@@ -277,31 +184,42 @@ angular.module('app', []).component('app', {
         type: 'my-info-table',
         labels: true,
         qHyperCubeDef: {
-          qDimensions: [{
-            qDef: {
-              qFieldDefs: ['Movie'],
+          qDimensions: [
+            {
+              qDef: {
+                qFieldDefs: ['Airport'],
+              },
             },
-          },
-          {
-            qDef: {
-              qFieldDefs: ['Image'],
+            {
+              qDef: {
+                qFieldDefs: ['Longitude'],
+              },
             },
-          },
-          {
-            qDef: {
-              qFieldDefs: ['Year'],
+            {
+              qDef: {
+                qFieldDefs: ['Latitude'],
+              },
             },
-          },
-          {
-            qDef: {
-              qFieldDefs: ['Genre'],
+            {
+              qDef: {
+                qFieldDefs: ['City'],
+              },
             },
-          },
-          {
-            qDef: {
-              qFieldDefs: ['Description'],
+            {
+              qDef: {
+                qFieldDefs: ['Altitude (ft)'],
+              },
             },
-          },
+            {
+              qDef: {
+                qFieldDefs: ['Country'],
+              },
+            },
+            {
+              qDef: {
+                qFieldDefs: ['IATA Code'],
+              },
+            },
           ],
           qInitialDataFetch: [{
             qTop: 0, qHeight: 50, qLeft: 0, qWidth: 50,
@@ -313,9 +231,11 @@ angular.module('app', []).component('app', {
       return app.createSessionObject(tableProperties)
         .then(model => model.getLayout()
           .then((layout) => {
-            Scatterplot.showDetails(layout);
+            ScatterplotAirport.showDetails(layout);
           }));
     };
+
+
   }],
   template,
 });
