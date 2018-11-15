@@ -8,17 +8,20 @@ services:
     ports:
       - "19076:9076"
     volumes: 
-      - ./data:/data
+      - myappvol:/data
     healthcheck:
       test: "exit 0"
 
   example:
     build: src
-    volumes:
-      - ./src:/app
+    # volumes:
+    #   - ./src:/app
     ports:
       - "127.0.0.1:8080:8080"
     depends_on:
       engine:
         condition: service_healthy
     restart: on-failure
+
+volumes:
+  myappvol: {}
