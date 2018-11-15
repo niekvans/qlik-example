@@ -22,11 +22,7 @@ angular.module('app', []).component('app', {
         this.clearAllSelections();
       }
     };
-
-    $scope.openGithub = () => {
-      window.open('https://github.com/qlik-oss/core-get-started');
-    };
-
+    
     this.connected = false;
     this.painted = false;
     this.connecting = true;
