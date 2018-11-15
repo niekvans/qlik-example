@@ -4,7 +4,7 @@ This repository contains an example build on the examples provided by Qlik (http
 
 ## Contents
 
-- [src](./src/) - Example source code for a line chart and a scatter plot visualization
+- [src](./src/) - Example source code for a scatter plot visualization
 - [data](./data) - The Airport data, used as user data in the examples
 
 ## Deploy
