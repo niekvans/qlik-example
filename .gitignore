@@ -5,3 +5,4 @@ node_modules/
 *.orig
 test/__artifacts__/
 .DS_Store
+src/node_modules/
